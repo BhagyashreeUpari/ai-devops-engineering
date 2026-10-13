@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broken-payment-test
+  namespace: ai-devops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: broken-payment-test
+  template:
+    metadata:
+      labels:
+        app: broken-payment-test
+    spec:
+      containers:
+        - name: payment-service
+          image: payment-service:v3
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5001
