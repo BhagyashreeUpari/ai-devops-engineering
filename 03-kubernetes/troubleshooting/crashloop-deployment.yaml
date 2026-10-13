@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crashloop-demo
+  namespace: ai-devops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crashloop-demo
+  template:
+    metadata:
+      labels:
+        app: crashloop-demo
+    spec:
+      containers:
+        - name: crash-demo
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: REQUIRED_CONFIG
+              value: "local-demo-config"
+          command: ["python", "-c"]
+          args:
+            - |
+              import os
+              import sys
+              import time
+
+              config = os.getenv("REQUIRED_CONFIG")
+
+              if not config:
+                  print("ERROR: required configuration is missing", flush=True)
+                  sys.exit(1)
+
+              print("Configuration loaded; application started", flush=True)
+
+              while True:
+                  time.sleep(30)
